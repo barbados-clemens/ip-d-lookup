@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using IPdLookUp.Entities;
+using IPdLookUp.Models;
+using IPdLookUp.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,53 +23,41 @@ namespace IPdLookUp.Controllers
         }
 
 
-        [HttpGet("{address}")]
-        [ProducesResponseType(typeof(LookUpResults), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(LookUpErrors), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RunTasks([FromRoute] string address, LookUpService[] services = null)
+        [HttpPost]
+        [ProducesResponseType(typeof(AppResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AppPartialResult), StatusCodes.Status206PartialContent)]
+        [ProducesResponseType(typeof(IAppErrorResult), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> RunTasks([FromBody] LookUpRequest request)
         {
-            if (services == null)
-                services = new[]
+            if (request.Services == null)
+                request.Services = new List<LookUpService>
                 {
                     LookUpService.GeoIP,
                     LookUpService.RDAP
                 };
 
-            return new OkObjectResult(new LookUpResults
+            if (!ModelState.IsValid)
+                return new BadRequestObjectResult(new AppErrorResult
+                {
+                    ErrorMessage = "Error processing request.",
+                    Errors = ModelState.FirstOrDefault().Value.Errors,
+                    FailServices = request.Services
+                });
+
+            var res = new AppResult
             {
-                Address = address,
-                Results = new List<object>()
-            });
+                Address = request.Address,
+                Results = new List<LookUpResult>()
+            };
+
+            foreach (var service in request.Services)
+            {
+                // TODO process request for service
+                res.Results.Add(await ServiceProcessor.Process(request.Address, service));
+            }
+
+
+            return new OkObjectResult(res);
         }
-    }
-
-    public enum LookUpService
-    {
-        GeoIP,
-        RDAP,
-        ReverseDNS,
-    }
-
-    public struct LookUpResults
-    {
-        public List<object> Results;
-
-        public string Address;
-    }
-
-    public struct LookUpResult
-    {
-        public LookUpService Service;
-
-        public object Data;
-    }
-
-    public struct LookUpErrors
-    {
-        public string Address;
-
-        public List<LookUpService> Services;
-
-        public string ErrorMessage;
     }
 }
