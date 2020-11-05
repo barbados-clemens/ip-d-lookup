@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPdLookUp", "IPdLookUp\IPdLookUp.csproj", "{E03B05E4-E6E0-48A7-B83E-ABB2776F7E8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IpDLookUp.Worker", "IpDLookUp.Worker\IpDLookUp.Worker.csproj", "{A242BD71-08BF-40A0-8951-2017905B5B83}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{E03B05E4-E6E0-48A7-B83E-ABB2776F7E8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E03B05E4-E6E0-48A7-B83E-ABB2776F7E8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E03B05E4-E6E0-48A7-B83E-ABB2776F7E8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A242BD71-08BF-40A0-8951-2017905B5B83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A242BD71-08BF-40A0-8951-2017905B5B83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A242BD71-08BF-40A0-8951-2017905B5B83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A242BD71-08BF-40A0-8951-2017905B5B83}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
