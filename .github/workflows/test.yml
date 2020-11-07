@@ -2,17 +2,40 @@ name: 'test'
 on: [ push, pull_request ]
 
 jobs:
-  backend:
-    runs-on: windows-latest
+  api:
+    runs-on: ubuntu-latest
     name: Run Dotnet Tests
+    env:
+      $DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      $DOCKER_PASSWORD: ${{  secrets.DOCKER_PASSWORD  }}
+      $DOCKER_PUSH_REGISTRY: ${{  secrets.DOCKER_PUSH_REGISTRY  }}
+      GIT_HASH: $(git rev-parse --short "$GITHUB_SHA")
+      GIT_BRANCH: ${GITHUB_REF##*/}
     steps:
       - uses: actions/checkout@v2
+
       - name: Setup Dotnet
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '3.1.x'
+
       - name: Run Tests
         run: dotnet test
+
       - name: Sanity Build
         run: dotnet build
 
+      - name: Login into Docker Registry
+        # docker login -u "DOCKER_USERNAME" -p "DOCKER_PASSWORD" $DOCKER_PUSH_REGISTRY
+        run: |
+          echo $DOCKER_PASSWORD | docker login $DOCKER_PUSH_REGISTRY -u "DOCKER_USERNAME" --password-stdin
+
+      - name: Build Image
+        # -t $DOCKER_PUSH_REGISTRY/tech-ops/pano-search:${{ steps.vars.outputs.sha_short }}
+        run: |
+          docker build -f docker/Dockerfile . -t $DOCKER_PUSH_REGISTRY/tech-ops/pano-search:latest
+
+      - name: Push Image
+        # docker push $DOCKER_PUSH_REGISTRY/tech-ops/pano-search:${{ steps.vars.outputs.sha_short }}
+        run: |
+          docker push $DOCKER_PUSH_REGISTRY/tech-ops/pano-search:latest
