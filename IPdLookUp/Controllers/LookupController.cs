@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IPdLookUp.Entities;
-using IPdLookUp.Models;
-using IPdLookUp.Types;
+using IpDLookUp.Services;
+using IpDLookUp.Services.Models;
+using IpDLookUp.Services.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -29,35 +30,49 @@ namespace IPdLookUp.Controllers
         [ProducesResponseType(typeof(IAppErrorResult), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RunTasks([FromBody] LookUpRequest request)
         {
-            if (request.Services == null)
-                request.Services = new List<LookUpService>
-                {
-                    LookUpService.GeoIP,
-                    LookUpService.RDAP
-                };
+            request.Services = SetDefaultServicesIfNull(request.Services);
 
+            var badReq = CheckModelState(request);
+            if (badReq != null)
+                return badReq;
+
+            var res = new AppResult
+            {
+                Address = request.Address,
+                Services = request.Services,
+            };
+
+            // TODO catch for partial result
+
+            // run in parallel
+            var pendingResults = request.Services.Select(service => ServiceProcessor.Process(request.Address, service));
+
+            res.Results = (await Task.WhenAll(pendingResults))
+                .ToList();
+
+            return new OkObjectResult(res);
+        }
+
+        private IActionResult? CheckModelState(LookUpRequest request)
+        {
             if (!ModelState.IsValid)
                 return new BadRequestObjectResult(new AppErrorResult
                 {
                     ErrorMessage = "Error processing request.",
                     Errors = ModelState.FirstOrDefault().Value.Errors,
-                    FailServices = request.Services
+                    FailServices = SetDefaultServicesIfNull(request.Services)
                 });
 
-            var res = new AppResult
+            return null;
+        }
+
+        private List<ServiceType> SetDefaultServicesIfNull(List<ServiceType>? serviceTypes)
+        {
+            return serviceTypes ?? new List<ServiceType>
             {
-                Address = request.Address,
-                Results = new List<LookUpResult>()
+                ServiceType.GeoIP,
+                ServiceType.Ping,
             };
-
-            foreach (var service in request.Services)
-            {
-                // TODO process request for service
-                res.Results.Add(await ServiceProcessor.Process(request.Address, service));
-            }
-
-
-            return new OkObjectResult(res);
         }
     }
 }

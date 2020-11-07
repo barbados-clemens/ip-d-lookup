@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using IpDLookUp.Services.Types;
 
-namespace IPdLookUp.Models
+namespace IpDLookUp.Services.Models
 {
-    public struct GeoIp
+    public class GeoIpModel
     {
         [JsonPropertyName("ip")]
         public string IP { get; set; }

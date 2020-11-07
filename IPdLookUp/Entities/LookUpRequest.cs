@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using IPdLookUp.Types;
+using IpDLookUp.Services.Types;
 using IPdLookUp.Validators;
 
 namespace IPdLookUp.Entities
@@ -11,6 +11,6 @@ namespace IPdLookUp.Entities
         [ValidAddress]
         public string Address { get; set; }
 
-        public List<LookUpService>? Services { get; set; }
+        public List<ServiceType>? Services { get; set; }
     }
 }

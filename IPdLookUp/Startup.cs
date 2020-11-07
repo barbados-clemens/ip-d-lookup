@@ -25,7 +25,8 @@ namespace IPdLookUp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(opts => { opts.JsonSerializerOptions.IgnoreNullValues = true; });
             services.AddSwaggerGen();
         }
 
@@ -33,12 +34,8 @@ namespace IPdLookUp
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseSwagger();
+            app.UseSwaggerUI(opts => { opts.SwaggerEndpoint("/swagger/v1/swagger.json", "IpDLookUp API v1"); });
 
-            app.UseSwaggerUI(opts =>
-            {
-                opts.SwaggerEndpoint("/swagger/v1/swagger.json", "IpDLookUp API v1");
-            });
-            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

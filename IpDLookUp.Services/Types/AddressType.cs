@@ -1,4 +1,4 @@
-﻿namespace IPdLookUp.Entities
+﻿namespace IpDLookUp.Services.Types
 {
     public enum AddressType
     {

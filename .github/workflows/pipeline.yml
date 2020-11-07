@@ -1,0 +1,43 @@
+name: 'publish'
+on: [ push ]
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    name: Run Dotnet Tests
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{  secrets.DOCKER_PASSWORD  }}
+      DOCKER_PUSH_REGISTRY: ${{  secrets.DOCKER_PUSH_REGISTRY  }}
+      GIT_HASH: $(git rev-parse --short "$GITHUB_SHA")
+      GIT_BRANCH: ${GITHUB_REF##*/}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '3.1.x'
+
+      - name: Run Tests
+        run: dotnet test
+
+      - name: Sanity Build
+        run: dotnet build
+
+      - name: Login into Docker
+        #  echo $DOCKER_PASSWORD | docker login $DOCKER_PUSH_REGISTRY -u "DOCKER_USERNAME" --password-stdin
+        run: |
+          echo "TODO log into docker"
+
+      - name: Build Images
+        #          docker build -f docker/core.Dockerfile . -t $DOCKER_PUSH_REGISTRY/ipd-core:latest
+        #          docker build -f docker/worker.Dockerfile . -t $DOCKER_PUSH_REGISTRY/ipd-worker:latest
+        run: |
+          echo "TODO build docker images"
+
+      - name: Push Images
+        #        docker push $DOCKER_PUSH_REGISTRY/ipd-core:latest
+        #        docker push $DOCKER_PUSH_REGISTRY/ipd-worker:latest
+        run: |
+          echo "TODO push docker images"

@@ -2,27 +2,27 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace IPdLookUp.Models
+namespace IpDLookUp.Services.Models
 {
-    public struct Rdap
+    public struct RdapModel
     {
         [JsonPropertyName("status")]
         public List<string> Status { get; set; }
 
         [JsonPropertyName("events")]
-        public List<RdapEvent> Events { get; set; }
+        public List<RdapEventModel> Events { get; set; }
 
         [JsonPropertyName("secureDNS")]
-        public RdapSecureDNS SecureDns { get; set; }
+        public RdapSecureDNSModel SecureDnsModel { get; set; }
 
         [JsonPropertyName("nameservers")]
-        public List<RdapNameServers> Nameservers { get; set; }
+        public List<RdapNameServersModel> Nameservers { get; set; }
 
         [JsonPropertyName("rdapConformance")]
         public List<string> RdapConformance { get; set; }
     }
 
-    public struct RdapEvent
+    public struct RdapEventModel
     {
         [JsonPropertyName("eventAction")]
         public string EventAction { get; set; }
@@ -31,7 +31,7 @@ namespace IPdLookUp.Models
         public DateTime EventDate { get; set; }
     }
 
-    public struct RdapSecureDNS
+    public struct RdapSecureDNSModel
     {
         [JsonPropertyName("delegationSigned")]
         public bool DelegationSigned { get; set; }
@@ -40,7 +40,7 @@ namespace IPdLookUp.Models
         public List<object> DSData { get; set; }
     }
 
-    public struct RdapDsData
+    public struct RdapDsDataModel
     {
         [JsonPropertyName("keyTag")]
         public int KeyTag { get; set; }
@@ -55,7 +55,7 @@ namespace IPdLookUp.Models
         public string Digest { get; set; }
     }
 
-    public struct RdapNameServers
+    public struct RdapNameServersModel
     {
         [JsonPropertyName("objectClassName")]
         public string ObjectClassName { get; set; }
@@ -64,7 +64,7 @@ namespace IPdLookUp.Models
         public string LdhName { get; set; }
     }
 
-    public struct RdapEntity
+    public struct RdapEntityModel
     {
         [JsonPropertyName("objectClassName")]
         public string ObjectClassName { get; set; }
@@ -76,15 +76,15 @@ namespace IPdLookUp.Models
         public List<string> Roles { get; set; }
 
         [JsonPropertyName("rdapPublicIds")]
-        public List<RdapPublicId> RdapPublicIds { get; set; }
+        public List<RdapPublicIdModel> RdapPublicIds { get; set; }
 
         // TODO vcardArray
 
         [JsonPropertyName("entities")]
-        public List<RdapEntity> Entities { get; set; }
+        public List<RdapEntityModel> Entities { get; set; }
     }
 
-    public struct RdapPublicId
+    public struct RdapPublicIdModel
     {
         [JsonPropertyName("type")]
         public string Type { get; set; }
