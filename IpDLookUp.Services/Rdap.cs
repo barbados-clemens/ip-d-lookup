@@ -7,7 +7,7 @@ using IpDLookUp.Services.Types;
 
 namespace IpDLookUp.Services
 {
-    public class Rdap : Service
+    public class Rdap : Service<RdapModel>
     {
         private HttpClient _client;
 
@@ -15,7 +15,7 @@ namespace IpDLookUp.Services
         {
             _client = client;
         }
-        public override async Task<IServiceResult> DoLookUp(string address, AddressType type)
+        public override async Task<IServiceResult<RdapModel>> DoLookUp(string address, AddressType type)
         {
             var url = new StringBuilder("https://rdap.verisign.com/com/v1/");
 
@@ -36,9 +36,9 @@ namespace IpDLookUp.Services
             var res = await _client.GetAsync(url.ToString());
             res.EnsureSuccessStatusCode();
 
-            var body = ParseBody<RdapModel>(await res.Content.ReadAsStringAsync());
+            var body = ParseBody(await res.Content.ReadAsStringAsync());
 
-            return new ServiceResult
+            return new ServiceResult<RdapModel>
             {
                 Data = body,
                 Status = ServiceStatus.Ok,

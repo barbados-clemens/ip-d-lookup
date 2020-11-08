@@ -6,7 +6,7 @@ using IpDLookUp.Services.Types;
 
 namespace IpDLookUp.Services
 {
-    public class SslLabs : Service
+    public class SslLabs : Service<SslLabsModel>
     {
         private HttpClient _client;
 
@@ -18,17 +18,25 @@ namespace IpDLookUp.Services
             _client = client;
         }
 
-        public override async Task<IServiceResult> DoLookUp(string address, AddressType type)
+        /// <summary>
+        /// SSL Labs can take some time to process the request.
+        ///
+        /// This method polls for completion result. with a dynamic back of
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public override async Task<IServiceResult<SslLabsModel>> DoLookUp(string address, AddressType type)
         {
             var url = $"https://api.ssllabs.com/api/v3/analyze?host={address}";
 
             var res = await _client.GetAsync(url);
             res.EnsureSuccessStatusCode();
 
-            var body = ParseBody<SslLabsModels>(await res.Content.ReadAsStringAsync());
+            var body = ParseBody(await res.Content.ReadAsStringAsync());
 
             if (body.Status.Equals("READY", StringComparison.OrdinalIgnoreCase))
-                return new ServiceResult
+                return new ServiceResult<SslLabsModel>
                 {
                     Data = body,
                     Status = ServiceStatus.Ok,

@@ -30,7 +30,6 @@ namespace IPdLookUp.Controllers
         [ProducesResponseType(typeof(IAppErrorResult), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RunTasks([FromBody] LookUpRequest request)
         {
-            request.Services = SetDefaultServicesIfNull(request.Services);
 
             var badReq = CheckModelState(request);
             if (badReq != null)
@@ -39,13 +38,13 @@ namespace IPdLookUp.Controllers
             var res = new AppResult
             {
                 Address = request.Address,
-                Services = request.Services,
+                Services = SetDefaultServicesIfNull(request.Services),
             };
 
             // TODO catch for partial result
 
             // run in parallel
-            var pendingResults = request.Services.Select(service => ServiceProcessor.Process(request.Address, service));
+            var pendingResults = res.Services.Select(service => ServiceProcessor.Process(request.Address, service));
 
             res.Results = (await Task.WhenAll(pendingResults))
                 .ToList();

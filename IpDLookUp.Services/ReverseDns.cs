@@ -7,16 +7,16 @@ using IpDLookUp.Services.Types;
 
 namespace IpDLookUp.Services
 {
-    public class ReverseDns : Service
+    public class ReverseDns : Service<IPHostEntry>
     {
-        public override async Task<IServiceResult> DoLookUp(string address, AddressType type)
+        public override async Task<IServiceResult<IPHostEntry>> DoLookUp(string address, AddressType type)
         {
             try
             {
                 var hostIpAddress = IPAddress.Parse(address);
                 var hostInfo = await Dns.GetHostEntryAsync(hostIpAddress);
 
-                return new ServiceResult
+                return new ServiceResult<IPHostEntry>
                 {
                     Data = hostInfo,
                     Status = ServiceStatus.Ok,
@@ -25,7 +25,7 @@ namespace IpDLookUp.Services
             }
             catch (SocketException e)
             {
-                return new ServiceResult
+                return new ServiceResult<IPHostEntry>
                 {
                     Type = ServiceType.ReverseDNS,
                     Status = ServiceStatus.Error,
@@ -36,10 +36,10 @@ namespace IpDLookUp.Services
             }
             catch (FormatException e)
             {
-                return new ServiceResult
+                return new ServiceResult<IPHostEntry>
                 {
                     Type = ServiceType.ReverseDNS,
-                    Status = ServiceStatus.Error,
+                    Status = ServiceStatus.Bad,
                     ErrorMessage = e.ToString(),
                 };
             }

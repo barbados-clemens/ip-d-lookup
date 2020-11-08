@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\IPdLookUp\IPdLookUp.csproj" />
+      <ProjectReference Include="..\IpDLookUp.Core\IpDLookUp.Core.csproj" />
     </ItemGroup>
 
 </Project>

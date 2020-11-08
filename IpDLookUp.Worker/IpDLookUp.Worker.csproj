@@ -10,7 +10,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers" />
+      <ProjectReference Include="..\IpDLookUp.Services\IpDLookUp.Services.csproj" />
     </ItemGroup>
 
 

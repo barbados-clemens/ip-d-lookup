@@ -5,7 +5,7 @@ using IpDLookUp.Services.Types;
 
 namespace IpDLookUp.Services
 {
-    public class GeoIp : Service
+    public class GeoIp : Service<GeoIpModel>
     {
         private HttpClient _client;
 
@@ -21,16 +21,16 @@ namespace IpDLookUp.Services
         /// <param name="address"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public override async Task<IServiceResult> DoLookUp(string address, AddressType type)
+        public override async Task<IServiceResult<GeoIpModel>> DoLookUp(string address, AddressType type)
         {
             var url = $"https://freegeoip.app/json/{address}";
             var res = await _client.GetAsync(url);
 
             res.EnsureSuccessStatusCode();
 
-            var body = ParseBody<GeoIpModel>(await res.Content.ReadAsStringAsync());
+            var body = ParseBody(await res.Content.ReadAsStringAsync());
 
-            return new ServiceResult
+            return new ServiceResult<GeoIpModel>
             {
                 Data = body,
                 Status = ServiceStatus.Ok,

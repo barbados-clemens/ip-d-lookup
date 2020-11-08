@@ -4,10 +4,10 @@ using IpDLookUp.Services.Types;
 
 namespace IpDLookUp.Services
 {
-    public abstract class Service
+    public abstract class Service<TModel>
     {
-        public abstract Task<IServiceResult> DoLookUp(string address, AddressType type);
+        public abstract Task<IServiceResult<TModel>> DoLookUp(string address, AddressType type);
 
-       protected  TModel ParseBody<TModel>(string json) => JsonSerializer.Deserialize<TModel>(json);
+        protected TModel ParseBody(string json) => JsonSerializer.Deserialize<TModel>(json);
     }
 }

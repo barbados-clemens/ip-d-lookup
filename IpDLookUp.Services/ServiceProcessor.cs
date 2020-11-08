@@ -7,7 +7,7 @@ using IpDLookUp.Services.Types;
 
 namespace IpDLookUp.Services
 {
-    public static class ServiceProcessor       
+    public static class ServiceProcessor
     {
         private static HttpClient _client = new HttpClient();
 
@@ -29,30 +29,36 @@ namespace IpDLookUp.Services
                 $"Expected {nameof(address)} to be a valid domain name or IPv4 address. unable to parse {address} as valid address type");
         }
 
-        public static async Task<IServiceResult> Process(string address, ServiceType type)
+        public static async Task<IServiceResult<TModel>> Process<TModel>(string address, ServiceType type)
         {
             try
             {
                 address = NormalizeAddress(address, out var addressType);
 
-                return type switch
+                var res = type switch
                 {
-                    ServiceType.GeoIP => await new GeoIp(_client).DoLookUp(address, addressType),
-                    ServiceType.RDAP => await new Rdap(_client).DoLookUp(address, addressType),
-                    ServiceType.ReverseDNS => await new ReverseDns().DoLookUp(address, addressType),
-                    ServiceType.SslLabs => await new SslLabs(_client).DoLookUp(address, addressType),
-                    ServiceType.Ping => await new PingService().DoLookUp(address, addressType),
+                    ServiceType.GeoIP => (IServiceResult<TModel>) await new GeoIp(_client).DoLookUp(address,
+                        addressType),
+                    ServiceType.RDAP => (IServiceResult<TModel>) await new Rdap(_client).DoLookUp(address, addressType),
+                    ServiceType.ReverseDNS => (IServiceResult<TModel>) await new ReverseDns().DoLookUp(address,
+                        addressType),
+                    ServiceType.SslLabs => (IServiceResult<TModel>) await new SslLabs(_client).DoLookUp(address,
+                        addressType),
+                    ServiceType.Ping => (IServiceResult<TModel>) await new PingService().DoLookUp(address, addressType),
                     _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
                 };
+
+                res.WorkerId = Environment.MachineName;
+                return res;
             }
             catch (Exception e)
             {
-                return new ServiceResult
+                return new ServiceResult<TModel>
                 {
-                    Data = null,
                     Status = ServiceStatus.Error,
                     Type = type,
                     ErrorMessage = $"Uncaught Error: {e}",
+                    WorkerId = Environment.MachineName,
                 };
             }
         }

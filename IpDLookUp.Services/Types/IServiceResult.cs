@@ -1,6 +1,8 @@
+using System.Text.Json.Serialization;
+
 namespace IpDLookUp.Services.Types
 {
-    public interface IServiceResult
+    public interface IServiceResult<TModel>
     {
         /// <summary>
         /// There's gotta be a better way than typing "object"
@@ -18,23 +20,32 @@ namespace IpDLookUp.Services.Types
         /// very interesting problem.
         /// specifics would probably come down what the consensus of the consumer wanted.
         /// </summary>
-        public object Data { get; set; }
+        public TModel Data { get; set; }
 
         public ServiceStatus Status { get; set; }
 
         public ServiceType Type { get; set; }
 
         public string? ErrorMessage { get; set; }
+
+        public string WorkerId { get; set; }
     }
 
-    public struct ServiceResult : IServiceResult
+    public class ServiceResult<TModel> : IServiceResult<TModel>
     {
-        public object Data { get; set; }
+        [JsonPropertyName("data")]
+        public TModel Data { get; set; }
 
+        [JsonPropertyName("status")]
         public ServiceStatus Status { get; set; }
 
+        [JsonPropertyName("type")]
         public ServiceType Type { get; set; }
 
+        [JsonPropertyName("errorMessage")]
         public string? ErrorMessage { get; set; }
+
+        [JsonPropertyName("workerId")]
+        public string WorkerId { get; set; }
     }
 }

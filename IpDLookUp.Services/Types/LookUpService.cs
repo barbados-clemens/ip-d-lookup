@@ -14,5 +14,6 @@
         Unknown,
         Ok,
         Error,
+        Bad,
     }
 }
