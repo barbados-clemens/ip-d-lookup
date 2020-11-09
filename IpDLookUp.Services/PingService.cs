@@ -47,25 +47,30 @@ namespace IpDLookUp.Services
                     Type = ServiceType.Ping,
                 };
             }
-            catch (SocketException e)
+            catch (Exception ex)
             {
-                return new ServiceResult<PingModel>
+                switch (ex)
                 {
-                    Type = ServiceType.ReverseDNS,
-                    Status = ServiceStatus.Error,
-                    ErrorMessage =
-                        $@"Socket Exception. This typically means the address wasn't able to be looked up. 
-                        Detailed Error: {e}"
-                };
-            }
-            catch (FormatException e)
-            {
-                return new ServiceResult<PingModel>
-                {
-                    Type = ServiceType.ReverseDNS,
-                    Status = ServiceStatus.Bad,
-                    ErrorMessage = e.ToString(),
-                };
+                    case FormatException _:
+                    case ArgumentNullException _:
+                        return new ServiceResult<PingModel>
+                        {
+                            Type = ServiceType.Ping,
+                            Status = ServiceStatus.Bad,
+                            ErrorMessage = ex.ToString(),
+                        };
+                    case SocketException _:
+                        return new ServiceResult<PingModel>
+                        {
+                            Type = ServiceType.Ping,
+                            Status = ServiceStatus.Error,
+                            ErrorMessage =
+                                $@"Socket Exception. This typically means the address wasn't able to be looked up. 
+                        Detailed Error: {ex}"
+                        };
+                    default:
+                        throw;
+                }
             }
         }
     }

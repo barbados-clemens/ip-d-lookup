@@ -15,37 +15,38 @@ namespace IPdLookUp.Core.Models
     {
         private static HttpClient _client = new HttpClient();
 
-        public static async Task<IAppResult> SendToWorkers(string workerAddress, string addressToCheck,
-            IEnumerable<ServiceType> types)
+        public static AppResult HandleInvalidResult(ServiceType type) => SetItemIntoResult(new ServiceResult<string>
         {
-            try
+            Status = ServiceStatus.Bad,
+            Type = type,
+            ErrorMessage = $"Invalid service type passed in. Expected {type} to be of {nameof(ServiceType)}",
+            WorkerId = Environment.MachineName,
+        });
+
+        public static async Task<AppResult> SendToWorkers(string workerAddress, string addressToCheck,
+            List<ServiceType> types)
+        {
+            var serviceTasks = types.Select(service =>
             {
-                var serviceTasks = types.Select(service =>
+                var url = $"{workerAddress}/{addressToCheck}?type={(int) service}";
+                return service switch
                 {
-                    var url = $"{workerAddress}/{addressToCheck}?type={(int) service}";
-                    return service switch
-                    {
-                        ServiceType.GeoIP => Send<GeoIpModel>(url, service),
-                        ServiceType.RDAP => Send<RdapModel>(url, service),
-                        ServiceType.ReverseDNS => Send<IPHostEntry>(url, service),
-                        ServiceType.SslLabs => Send<SslLabsModel>(url, service),
-                        ServiceType.Ping => Send<PingModel>(url, service),
-                        _ => throw new ArgumentOutOfRangeException(nameof(service), service, "Invalid Service Type"),
-                    };
-                });
+                    ServiceType.GeoIP => Send<GeoIpModel>(url, service),
+                    ServiceType.RDAP => Send<RdapModel>(url, service),
+                    ServiceType.ReverseDNS => Send<IPHostEntry>(url, service),
+                    ServiceType.SslLabs => Send<SslLabsModel>(url, service),
+                    ServiceType.Ping => Send<PingModel>(url, service),
+                    _ => Task.Factory.StartNew(() => HandleInvalidResult(service)),
+                };
+            });
 
-                var items = await Task.WhenAll(serviceTasks);
+            var items = await Task.WhenAll(serviceTasks);
 
-                var single = MergeItems(items);
+            var single = MergeItems(items);
 
-                single.Address = addressToCheck;
-                single.Services = types;
-                return single;
-            }
-            catch (ArgumentOutOfRangeException argEx)
-            {
-                return new AppPartialResult();
-            }
+            single.Address = addressToCheck;
+            single.Services = types;
+            return single;
         }
 
         private static async Task<AppResult> Send<TModel>(string url, ServiceType type)
@@ -55,11 +56,11 @@ namespace IPdLookUp.Core.Models
                 var res = await _client.GetAsync(url);
 
                 var body = JsonSerializer.Deserialize<ServiceResult<TModel>>(await res.Content.ReadAsStringAsync());
-                return SetItemIntoResult(body.Type, body);
+                return SetItemIntoResult(body);
             }
             catch (Exception e)
             {
-                return SetItemIntoResult(type, new ServiceResult<TModel>
+                return SetItemIntoResult(new ServiceResult<TModel>
                 {
                     Status = ServiceStatus.Error,
                     Type = type,
@@ -68,21 +69,10 @@ namespace IPdLookUp.Core.Models
             }
         }
 
-        private static AppResult MergeItems(IEnumerable<AppResult> items)
-        {
-            var clean = new AppResult();
-            foreach (var item in items)
-            {
-                CopyValues(clean, item);
-            }
-
-            return clean;
-        }
-
-        private static AppResult SetItemIntoResult<TModel>(ServiceType type, IServiceResult<TModel> data)
+        private static AppResult SetItemIntoResult<TModel>(IServiceResult<TModel> data)
         {
             var result = new AppResult();
-            switch (type)
+            switch (data.Type)
             {
                 case ServiceType.GeoIP:
                     result.GeoIp = (ServiceResult<GeoIpModel>) data;
@@ -100,10 +90,24 @@ namespace IPdLookUp.Core.Models
                     result.Ping = (ServiceResult<PingModel>) data;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, $"Invalid service type {type}");
+                    result.ErrorMessage =
+                        $"Invalid service type. Expected {data.Type} to be of type {nameof(ServiceType)}";
+                    result.FailServices = new[] {data.Type};
+                    break;
             }
 
             return result;
+        }
+
+        private static AppResult MergeItems(IEnumerable<AppResult> items)
+        {
+            var clean = new AppResult();
+            foreach (var item in items)
+            {
+                CopyValues(clean, item);
+            }
+
+            return clean;
         }
 
         private static void CopyValues(AppResult target, AppResult source)

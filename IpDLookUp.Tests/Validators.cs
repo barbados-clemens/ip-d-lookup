@@ -1,3 +1,4 @@
+using IPdLookUp.Core.Validators;
 using NUnit.Framework;
 
 namespace IpDLookUp.Tests
@@ -5,74 +6,72 @@ namespace IpDLookUp.Tests
     public class Validators
     {
         [Test]
-        public void should_match_domain_names()
+        [TestCase("calebukle.com")]
+        [TestCase("music.calebukle.com")]
+        public void should_validate_domain_name(string domainToTest)
         {
-            var names = new[]
-            {
-                "calebukle.com",
-                "music.calebukle.com",
-            };
+            var v = new ValidAddressAttribute();
 
-            foreach (var name in names)
-            {
-                Assert.True(Services.Models.Validators.DomainName.IsMatch(name), $"Didn't match domain address: {name}");
-            }
+            Assert.IsTrue(v.IsValid("calebukle.com"),
+                $"Valid domain was validated false. Expect {domainToTest} to have passed ");
         }
 
         [Test]
-        public void should_match_ipv4_address()
+        [TestCase(".104.18.61")]
+        [TestCase("2001:db8:85a3:8d3:1319:8a2e:370:7348")]
+        public void should_not_validate_bad_ip(string ipToTest)
         {
-            var ips = new[]
-            {
-                "104.18.61.137",
-                "141.101.64.10",
-            };
+            var v = new ValidAddressAttribute();
 
-            foreach (var ip in ips)
-            {
-                Assert.True(Services.Models.Validators.IPv4.IsMatch(ip), $"Didn't match IP address as IPv4 Address: {ip}");
-            }
+            Assert.IsFalse(v.IsValid(ipToTest), $"Bad IP passed that shouldn't, {ipToTest}");
+
+            Assert.IsTrue(v.IsValid("1.1.1.1"), "Valid IPv4 address was wrongly rejected!");
         }
 
         [Test]
-        public void should_not_match_invalid_ipv4()
+        [TestCase("calebukle.com")]
+        [TestCase("music.calebukle.com")]
+        public void should_match_domain_names(string domain)
         {
-            var ips = new[]
-            {
-                "104.18.61",
-                "2001:db8:85a3:8d3:1319:8a2e:370:7348",
-                "10",
-                "Blah",
-                "test.test.test.test",
-                ".10.10.10",
-                "800.900.011.099",
-                "256,256,256,256"
-            };
-
-            foreach (var ip in ips)
-            {
-                Assert.False(Services.Models.Validators.IPv4.IsMatch(ip),
-                    $"Shouldn't match IP address as IPv4 Address: {ip}");
-            }
+            Assert.True(Services.Models.Validators.DomainName.IsMatch(domain),
+                $"Didn't match domain address: {domain}");
         }
 
         [Test]
-        public void should_match_protocols()
+        [TestCase("104.18.61.137")]
+        [TestCase("141.101.64.10")]
+        public void should_match_ipv4_address(string ipToTest)
         {
-            var protos = new[]
-            {
-                "https://",
-                "ftps://",
-                "ftp://",
-                "http://",
-                "https://calebukle.com",
-                "http://music.calebukle.com",
-            };
+            Assert.True(Services.Models.Validators.IPv4.IsMatch(ipToTest),
+                $"Didn't match IP address as IPv4 Address: {ipToTest}");
+        }
 
-            foreach (var proto in protos)
-            {
-                Assert.True(Services.Models.Validators.Protocol.IsMatch(proto), $"Didn't match protocol: {proto}");
-            }
+        [Test]
+        [TestCase("104.18.61")]
+        [TestCase("2001:db8:85a3:8d3:1319:8a2e:370:7348")]
+        [TestCase("10")]
+        [TestCase("Blah")]
+        [TestCase("test.test.test.test")]
+        [TestCase(".10.10.10")]
+        [TestCase("800.900.011.099")]
+        [TestCase("256,256,256,256")]
+        public void should_not_match_invalid_ipv4(string ipToTest)
+        {
+            Assert.False(Services.Models.Validators.IPv4.IsMatch(ipToTest),
+                $"Shouldn't match IP address as IPv4 Address: {ipToTest}");
+        }
+
+        [Test]
+        [TestCase("https://")]
+        [TestCase("ftps://")]
+        [TestCase("ftp://")]
+        [TestCase("http://")]
+        [TestCase("https://calebukle.com")]
+        [TestCase("http://music.calebukle.com")]
+        public void should_match_protocols(string domainWithProtocol)
+        {
+            Assert.True(Services.Models.Validators.Protocol.IsMatch(domainWithProtocol),
+                $"Didn't match protocol: {domainWithProtocol}");
         }
     }
 }

@@ -30,7 +30,7 @@ namespace IPdLookUp.Core.Entities
         public IEnumerable<ServiceType> FailServices { get; set; }
     }
 
-    public class AppResult : IAppResult
+    public class AppResult : IAppResult, IAppErrorResult
     {
         public string Address { get; set; }
 
@@ -45,6 +45,10 @@ namespace IPdLookUp.Core.Entities
         public IServiceResult<SslLabsModel>? SslLabs { get; set; }
 
         public IServiceResult<PingModel>? Ping { get; set; }
+        
+        public string? ErrorMessage { get; set; }
+
+        public IEnumerable<ServiceType>? FailServices { get; set; }
     }
 
     public struct AppErrorResult : IAppErrorResult
@@ -52,27 +56,6 @@ namespace IPdLookUp.Core.Entities
         public string ErrorMessage { get; set; }
 
         public ModelErrorCollection Errors { get; set; }
-
-        public IEnumerable<ServiceType> FailServices { get; set; }
-    }
-
-    public struct AppPartialResult : IAppResult, IAppErrorResult
-    {
-        public string Address { get; set; }
-
-        public IEnumerable<ServiceType> Services { get; set; }
-
-        public IServiceResult<GeoIpModel>? GeoIp { get; set; }
-
-        public IServiceResult<RdapModel>? Rdap { get; set; }
-
-        public IServiceResult<IPHostEntry>? ReverseDns { get; set; }
-
-        public IServiceResult<SslLabsModel>? SslLabs { get; set; }
-
-        public IServiceResult<PingModel>? Ping { get; set; }
-
-        public string ErrorMessage { get; set; }
 
         public IEnumerable<ServiceType> FailServices { get; set; }
     }

@@ -13,6 +13,17 @@ namespace IpDLookUp.Services
         {
             try
             {
+                if (type != AddressType.Ip)
+                {
+                    return new ServiceResult<IPHostEntry>
+                    {
+                        Status = ServiceStatus.Bad,
+                        Type = ServiceType.ReverseDNS,
+                        ErrorMessage = "Only IP Addresses are valid for an Reverse DNS look up",
+                        WorkerId = Environment.MachineName,
+                    };
+                }
+
                 var hostIpAddress = IPAddress.Parse(address);
                 var hostInfo = await Dns.GetHostEntryAsync(hostIpAddress);
 

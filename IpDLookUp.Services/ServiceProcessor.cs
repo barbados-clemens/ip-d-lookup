@@ -11,7 +11,7 @@ namespace IpDLookUp.Services
     {
         private static HttpClient _client = new HttpClient();
 
-        private static string NormalizeAddress(string address, out AddressType addressType)
+        public static string NormalizeAddress(string address, out AddressType addressType)
         {
             if (Validators.DomainName.IsMatch(address))
             {

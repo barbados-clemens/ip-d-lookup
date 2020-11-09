@@ -6,7 +6,7 @@ namespace IPdLookUp.Core.Validators
     {
         protected override ValidationResult? IsValid(object value, ValidationContext validationContext)
         {
-            var parsedVal = value.ToString();
+            var parsedVal = value.ToString() ?? string.Empty;
 
             // make sure protocol isn't in the address
             if (IpDLookUp.Services.Models.Validators.Protocol.IsMatch(parsedVal))
@@ -20,7 +20,7 @@ namespace IPdLookUp.Core.Validators
                 return null;
 
             return new ValidationResult(
-                $"Invalid address passed in. Expected {value} to be a valid IPv4 Address or Domain.");
+                $"Invalid address passed in. Expected {value} to be a valid IPv4 Address or Domain Name (without protocol).");
         }
     }
 }

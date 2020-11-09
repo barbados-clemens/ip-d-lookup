@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,25 +16,19 @@ namespace IpDLookUp.Services
         {
             _client = client;
         }
+
         public override async Task<IServiceResult<RdapModel>> DoLookUp(string address, AddressType type)
         {
-            var url = new StringBuilder("https://rdap.verisign.com/com/v1/");
-
-            switch (type)
+            // use handy redirect service; therefore, not having to use tld matching
+            // https://openrdap.org/api
+            var url = type switch
             {
-                case AddressType.DomainName:
-                    url.Append("domain/");
-                    break;
-                case AddressType.Ip:
-                    url.Append("ip/");
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
+                AddressType.DomainName => $"https://www.rdap.net/domain/{address}",
+                AddressType.Ip => $"https://www.rdap.net/ip/{address}",
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+            };
 
-            url.Append(address);
-
-            var res = await _client.GetAsync(url.ToString());
+            var res = await _client.GetAsync(url);
             res.EnsureSuccessStatusCode();
 
             var body = ParseBody(await res.Content.ReadAsStringAsync());
@@ -44,7 +39,6 @@ namespace IpDLookUp.Services
                 Status = ServiceStatus.Ok,
                 Type = ServiceType.RDAP,
             };
-
         }
     }
 }

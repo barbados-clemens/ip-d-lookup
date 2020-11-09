@@ -18,4 +18,10 @@
       <ProjectReference Include="..\IpDLookUp.Worker\IpDLookUp.Worker.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="appSettings.Test.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

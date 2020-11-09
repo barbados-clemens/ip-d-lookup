@@ -42,23 +42,34 @@ namespace IPdLookUp.Core.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(AppResult), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(AppPartialResult), StatusCodes.Status206PartialContent)]
         [ProducesResponseType(typeof(IAppErrorResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(IAppErrorResult), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RunTasks([FromBody] LookUpRequest request)
         {
-            _logger.LogInformation(
-                $"New Request with {request.Services?.Count ?? 0} selected services for {request.Address}");
-            var badReq = CheckModelState(request);
-            if (badReq != null)
-                return badReq;
+            try
+            {
+                _logger.LogInformation(
+                    $"New Request with {request.Services?.Count ?? 0} selected services for {request.Address}");
+                var badReq = CheckModelState(request);
+                if (badReq != null)
+                    return badReq;
 
-            var services = SetDefaultServicesIfNull(request.Services);
+                var services = SetDefaultServicesIfNull(request.Services);
 
-            var res = await WorkerHelper
-                .SendToWorkers(_config["WorkerAddress"], request.Address, services);
+                var res = await WorkerHelper
+                    .SendToWorkers(_config["WorkerAddress"], request.Address, services);
 
-
-            return new OkObjectResult(res);
+                return new OkObjectResult(res);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error processing request");
+                return StatusCode(StatusCodes.Status500InternalServerError, new AppErrorResult
+                {
+                    ErrorMessage = $"Unexpected Error: {e}",
+                    FailServices = SetDefaultServicesIfNull(request.Services)
+                });
+            }
         }
 
         private IActionResult? CheckModelState(LookUpRequest request)
