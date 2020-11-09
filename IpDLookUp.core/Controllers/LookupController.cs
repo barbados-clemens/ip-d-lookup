@@ -26,16 +26,13 @@ namespace IPdLookUp.Core.Controllers
         public LookupController(ILogger<LookupController> logger, IConfiguration config)
         {
             _logger = logger;
+            _config = config;
 
-            if (config["WorkerAddress"] != null)
-            {
-                _config = config;
-            }
-            else
+            if (config["WorkerAddress"] == null)
             {
                 _logger.LogError("Missing worker address from configuration");
-                throw new ArgumentException(
-                    "Expected worker address in config. Make sure there is a configured worker address in appSettings");
+                // throw new ArgumentException(
+                //     "Expected worker address in config. Make sure there is a configured worker address in appSettings");
             }
         }
 

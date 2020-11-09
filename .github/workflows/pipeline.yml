@@ -31,10 +31,9 @@ jobs:
           echo "TODO log into docker"
 
       - name: Build Images
-        #          docker build -f docker/core.Dockerfile . -t $DOCKER_PUSH_REGISTRY/ipd-core:latest
-        #          docker build -f docker/worker.Dockerfile . -t $DOCKER_PUSH_REGISTRY/ipd-worker:latest
         run: |
-          echo "TODO build docker images"
+          docker build -t ipd-core:latest  -f docker/Core.Dockerfile .
+          docker build -t ipd-worker:latest -f docker/Worker.Dockerfile .
 
       - name: Push Images
         #        docker push $DOCKER_PUSH_REGISTRY/ipd-core:latest

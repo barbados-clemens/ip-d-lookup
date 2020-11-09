@@ -70,12 +70,12 @@ namespace IpDLookUp.Tests
             Assert.IsInstanceOf<OkObjectResult>(actual);
         }
 
-        [Test]
-        public void should_throw_without_correct_config()
-        {
-            var badConfig = new ConfigurationBuilder()
-                .Build();
-            Assert.Throws<ArgumentException>(() => new LookupController(_fakeLog, badConfig));
-        }
+        // [Test]
+        // public void should_throw_without_correct_config()
+        // {
+        //     var badConfig = new ConfigurationBuilder()
+        //         .Build();
+        //     Assert.Throws<ArgumentException>(() => new LookupController(_fakeLog, badConfig));
+        // }
     }
 }
