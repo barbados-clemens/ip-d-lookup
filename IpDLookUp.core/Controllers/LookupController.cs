@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using IPdLookUp.Entities;
-using IPdLookUp.Models;
+using IPdLookUp.Core.Entities;
+using IPdLookUp.Core.Models;
 using IpDLookUp.Services;
 using IpDLookUp.Services.Models;
 using IpDLookUp.Services.Types;
@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace IPdLookUp.Controllers
+namespace IPdLookUp.Core.Controllers
 {
     [Route("api/[controller]")]
     [Produces("application/json")]

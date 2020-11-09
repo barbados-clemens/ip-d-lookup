@@ -4,7 +4,7 @@ using IpDLookUp.Services.Models;
 using IpDLookUp.Services.Types;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace IPdLookUp.Entities
+namespace IPdLookUp.Core.Entities
 {
     public interface IAppResult
     {

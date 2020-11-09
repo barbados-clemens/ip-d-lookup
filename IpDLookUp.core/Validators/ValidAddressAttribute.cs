@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace IPdLookUp.Validators
+namespace IPdLookUp.Core.Validators
 {
     public class ValidAddressAttribute : ValidationAttribute
     {

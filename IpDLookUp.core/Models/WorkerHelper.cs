@@ -5,11 +5,11 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using IPdLookUp.Entities;
+using IPdLookUp.Core.Entities;
 using IpDLookUp.Services.Models;
 using IpDLookUp.Services.Types;
 
-namespace IPdLookUp.Models
+namespace IPdLookUp.Core.Models
 {
     public static class WorkerHelper
     {

@@ -14,6 +14,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\IpDLookUp.Core\IpDLookUp.Core.csproj" />
+      <ProjectReference Include="..\IpDLookUp.Services\IpDLookUp.Services.csproj" />
+      <ProjectReference Include="..\IpDLookUp.Worker\IpDLookUp.Worker.csproj" />
     </ItemGroup>
 
 </Project>

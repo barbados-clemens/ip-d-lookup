@@ -23,7 +23,7 @@ namespace IpDLookUp.Tests
         {
             var rd = new ReverseDns();
 
-            var res  = await rd.DoLookUp("69.109.161.49", AddressType.Ip);
+            var res = await rd.DoLookUp("69.109.161.49", AddressType.Ip);
             Assert.IsNotNull(res);
         }
     }

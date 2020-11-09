@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using IpDLookUp.Services.Types;
-using IPdLookUp.Validators;
+using IPdLookUp.Core.Validators;
 
-namespace IPdLookUp.Entities
+namespace IPdLookUp.Core.Entities
 {
     public struct LookUpRequest
     {
