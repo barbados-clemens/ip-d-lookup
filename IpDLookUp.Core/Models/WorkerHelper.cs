@@ -52,12 +52,13 @@ namespace IPdLookUp.Core.Models
 
         private static async Task<AppResult> Send<TModel>(string url, ServiceType type)
         {
+            var res = await _client.GetAsync(url);
 
-                var res = await _client.GetAsync(url);
-                var content = await res.Content.ReadAsStringAsync();
+            res.EnsureSuccessStatusCode();
+            var content = await res.Content.ReadAsStringAsync();
 
-                var body = JsonSerializer.Deserialize<ServiceResult<TModel>>(content);
-                return SetItemIntoResult(body);
+            var body = JsonSerializer.Deserialize<ServiceResult<TModel>>(content);
+            return SetItemIntoResult(body);
             // }
             // catch (Exception e)
             // {
