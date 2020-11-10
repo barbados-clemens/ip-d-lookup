@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 using IPdLookUp.Core.Entities;
 using IpDLookUp.Services.Models;
 using IpDLookUp.Services.Types;
+using Microsoft.Extensions.Logging;
 
 namespace IPdLookUp.Core.Models
 {
     public static class WorkerHelper
     {
+        public static ILogger logger;
+
         private static HttpClient _client = new HttpClient();
 
         public static AppResult HandleInvalidResult(ServiceType type) => SetItemIntoResult(new ServiceResult<string>
@@ -55,7 +58,7 @@ namespace IPdLookUp.Core.Models
             {
                 var res = await _client.GetAsync(url);
                 var content = await res.Content.ReadAsStringAsync();
-                Console.WriteLine(content);
+                logger.LogInformation(content);
 
                 var body = JsonSerializer.Deserialize<ServiceResult<TModel>>(content);
                 return SetItemIntoResult(body);
