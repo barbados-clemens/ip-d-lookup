@@ -56,11 +56,12 @@ namespace IPdLookUp.Core.Controllers
                 var res = await WorkerHelper
                     .SendToWorkers(_config["WORKER_ADDRESS"], request.Address, services);
 
+                _logger.LogInformation($"Finished processing request for {request.Address}");
                 return new OkObjectResult(res);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error processing request");
+                _logger.LogError(e, $"Error processing request for {request.Address}");
                 return StatusCode(StatusCodes.Status500InternalServerError, new AppErrorResult
                 {
                     ErrorMessage = $"Unexpected Error: {e}",

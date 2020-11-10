@@ -54,8 +54,10 @@ namespace IPdLookUp.Core.Models
             try
             {
                 var res = await _client.GetAsync(url);
+                var content = await res.Content.ReadAsStringAsync();
+                Console.WriteLine(content);
 
-                var body = JsonSerializer.Deserialize<ServiceResult<TModel>>(await res.Content.ReadAsStringAsync());
+                var body = JsonSerializer.Deserialize<ServiceResult<TModel>>(content);
                 return SetItemIntoResult(body);
             }
             catch (Exception e)
