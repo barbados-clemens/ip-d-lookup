@@ -22,6 +22,12 @@ namespace IpDLookUp.Worker.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Worker endpoint to query a single service
+        /// </summary>
+        /// <param name="address">domain or IPv4 address</param>
+        /// <param name="type">Service type</param>
+        /// <returns></returns>
         [HttpGet("{address}")]
         public async Task<IActionResult> HandleServiceRequest([FromRoute] string address, ServiceType type)
         {

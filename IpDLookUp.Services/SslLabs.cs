@@ -6,6 +6,10 @@ using IpDLookUp.Services.Types;
 
 namespace IpDLookUp.Services
 {
+    /// <summary>
+    /// Service for processing SSL Labs Requests
+    /// Note: SSL Labs requests can take some time if the report has not recently been run.
+    /// </summary>
     public class SslLabs : Service<SslLabsModel>
     {
         private HttpClient _client;

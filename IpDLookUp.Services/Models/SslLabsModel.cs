@@ -4,8 +4,7 @@ using System.Text.Json.Serialization;
 namespace IpDLookUp.Services.Models
 {
     /// <summary>
-    /// https://api.ssllabs.com/api/v3/analyze?host=calebukle.com
-    /// Wait for the status of "READY" for valid results
+    /// DTO for SSL Labs service API call
     /// </summary>
     public struct SslLabsModel
     {

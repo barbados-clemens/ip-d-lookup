@@ -6,6 +6,9 @@ using IPdLookUp.Core.Validators;
 
 namespace IPdLookUp.Core.Entities
 {
+    /// <summary>
+    /// Model for incoming request with custom validator for Address
+    /// </summary>
     public struct LookUpRequest
     {
         [ValidAddress]

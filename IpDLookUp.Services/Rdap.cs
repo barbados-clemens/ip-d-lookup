@@ -8,6 +8,9 @@ using IpDLookUp.Services.Types;
 
 namespace IpDLookUp.Services
 {
+    /// <summary>
+    /// Service for processing RDAP Requests
+    /// </summary>
     public class Rdap : Service<RdapModel>
     {
         private HttpClient _client;

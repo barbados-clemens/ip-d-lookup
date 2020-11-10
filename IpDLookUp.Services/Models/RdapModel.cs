@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace IpDLookUp.Services.Models
 {
+    /// <summary>
+    /// DTO for RDAP service API call
+    /// </summary>
     public struct RdapModel
     {
         [JsonPropertyName("status")]

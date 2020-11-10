@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace IpDLookUp.Services.Models
 {
+    /// <summary>
+    /// DTO for Ping Service
+    /// </summary>
     public struct PingModel
     {
         [JsonPropertyName("address")]

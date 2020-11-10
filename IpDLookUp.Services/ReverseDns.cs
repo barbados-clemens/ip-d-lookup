@@ -7,6 +7,10 @@ using IpDLookUp.Services.Types;
 
 namespace IpDLookUp.Services
 {
+    /// <summary>
+    /// Service for processing Reverse DNS Requests
+    /// This is only valid for IP addresses
+    /// </summary>
     public class ReverseDns : Service<IPHostEntry>
     {
         public override async Task<IServiceResult<IPHostEntry>> DoLookUp(string address, AddressType type)

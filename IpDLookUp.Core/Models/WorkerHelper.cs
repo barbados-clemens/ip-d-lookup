@@ -12,10 +12,18 @@ using Microsoft.Extensions.Logging;
 
 namespace IPdLookUp.Core.Models
 {
+    /// <summary>
+    /// Main class for sending request to pool of workers
+    /// </summary>
     public static class WorkerHelper
     {
         private static HttpClient _client = new HttpClient();
 
+        /// <summary>
+        /// Used for when a request has an invalid type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static AppResult HandleInvalidResult(ServiceType type) => SetItemIntoResult(new ServiceResult<string>
         {
             Status = ServiceStatus.Bad,
@@ -24,6 +32,13 @@ namespace IPdLookUp.Core.Models
             WorkerId = Environment.MachineName,
         });
 
+        /// <summary>
+        /// Send list of services to be processed.
+        /// </summary>
+        /// <param name="workerAddress">Address to reach the worker api. with api path. i.e. api.com/api/worker</param>
+        /// <param name="addressToCheck">the address (domain/IPv4) to run services on</param>
+        /// <param name="types">services to run again addressToCheck</param>
+        /// <returns></returns>
         public static async Task<AppResult> SendToWorkers(string workerAddress, string addressToCheck,
             List<ServiceType> types)
         {
@@ -50,6 +65,13 @@ namespace IPdLookUp.Core.Models
             return single;
         }
 
+        /// <summary>
+        /// Actual method that fires off request to the worker api
+        /// </summary>
+        /// <param name="url">formatted url for the worker api</param>
+        /// <param name="type">service type to run</param>
+        /// <typeparam name="TModel">Entity that will be inside the Data property of IServiceResponse</typeparam>
+        /// <returns></returns>
         private static async Task<AppResult> Send<TModel>(string url, ServiceType type)
         {
             try
@@ -72,6 +94,14 @@ namespace IPdLookUp.Core.Models
             }
         }
 
+        /// <summary>
+        /// Translate IServiceResult<TModel> into AppResult by setting property related to TModel.
+        /// Other properties will be null
+        /// See <see cref="MergeItems"/> to combine several AppResults into a single one.
+        /// </summary>
+        /// <param name="data">Data from worker API</param>
+        /// <typeparam name="TModel">Model of the response</typeparam>
+        /// <returns></returns>
         private static AppResult SetItemIntoResult<TModel>(IServiceResult<TModel> data)
         {
             var result = new AppResult();
@@ -102,6 +132,12 @@ namespace IPdLookUp.Core.Models
             return result;
         }
 
+        /// <summary>
+        /// Take list of AppResults and merge the properties into one AppResult.
+        /// Note: Properties will override each other if not null
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns>Merged AppResult</returns>
         private static AppResult MergeItems(IEnumerable<AppResult> items)
         {
             var clean = new AppResult();
@@ -113,6 +149,11 @@ namespace IPdLookUp.Core.Models
             return clean;
         }
 
+        /// <summary>
+        /// Will copy values from source to target. Requires a reference type otherwise will always be null
+        /// </summary>
+        /// <param name="target">Reference type (i.e. class)</param>
+        /// <param name="source">Reference type (i.e. class)</param>
         private static void CopyValues(AppResult target, AppResult source)
         {
             var appTypes = typeof(AppResult);

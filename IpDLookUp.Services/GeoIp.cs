@@ -5,6 +5,9 @@ using IpDLookUp.Services.Types;
 
 namespace IpDLookUp.Services
 {
+    /// <summary>
+    /// Service for processing GeoIP Requests
+    /// </summary>
     public class GeoIp : Service<GeoIpModel>
     {
         private HttpClient _client;

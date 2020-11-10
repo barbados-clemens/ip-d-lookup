@@ -3,16 +3,19 @@ using IpDLookUp.Services.Types;
 
 namespace IpDLookUp.Services.Models
 {
+    /// <summary>
+    /// DTO for GeoIP Service API call
+    /// </summary>
     public class GeoIpModel
     {
         [JsonPropertyName("ip")]
-        public string IP { get; set; }
+        public string? Ip { get; set; }
 
         [JsonPropertyName("country_code")]
-        public string CountryCode { get; set; }
+        public string? CountryCode { get; set; }
 
         [JsonPropertyName("country_name")]
-        public string CountryName { get; set; }
+        public string? CountryName { get; set; }
 
         [JsonPropertyName("region_code")]
         public string? RegionCode { get; set; }
@@ -27,7 +30,7 @@ namespace IpDLookUp.Services.Models
         public string? ZipCode { get; set; }
 
         [JsonPropertyName("time_zone")]
-        public string TimeZone { get; set; }
+        public string? TimeZone { get; set; }
 
         [JsonPropertyName("latitude")]
         public decimal Latitude { get; set; }

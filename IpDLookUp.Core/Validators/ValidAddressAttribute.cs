@@ -2,6 +2,9 @@
 
 namespace IPdLookUp.Core.Validators
 {
+    /// <summary>
+    /// Custom validation attribute for validating an address to a domain or IPv4 address.
+    /// </summary>
     public class ValidAddressAttribute : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object value, ValidationContext validationContext)

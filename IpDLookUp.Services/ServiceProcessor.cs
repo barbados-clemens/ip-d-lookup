@@ -7,6 +7,9 @@ using IpDLookUp.Services.Types;
 
 namespace IpDLookUp.Services
 {
+    /// <summary>
+    /// Wrapper around each service that handles address normalization and error handling
+    /// </summary>
     public static class ServiceProcessor
     {
         private static HttpClient _client = new HttpClient();

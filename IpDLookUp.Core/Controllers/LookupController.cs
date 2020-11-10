@@ -37,6 +37,15 @@ namespace IPdLookUp.Core.Controllers
         }
 
 
+        /// <summary>
+        /// Lookup information about an address (domain or IPv4)
+        /// </summary>
+        /// <param name="request">Request body
+        /// see <see cref="ServiceType"/> for more details on services
+        /// </param>
+        /// <returns>errorMessage propery will contain the error if any.
+        /// Each service will contain it's own errorMessage and status as well.
+        /// </returns>
         [HttpPost]
         [ProducesResponseType(typeof(AppResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(IAppErrorResult), StatusCodes.Status400BadRequest)]
@@ -70,6 +79,11 @@ namespace IPdLookUp.Core.Controllers
             }
         }
 
+        /// <summary>
+        /// Check custom validators for errors
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns>Returns BadRequestObjectResult with AppErrorResult as payload, otherwise null</returns>
         private IActionResult? CheckModelState(LookUpRequest request)
         {
             if (!ModelState.IsValid)
@@ -83,6 +97,11 @@ namespace IPdLookUp.Core.Controllers
             return null;
         }
 
+        /// <summary>
+        /// Will return default services to use if none are provided by the client.
+        /// </summary>
+        /// <param name="serviceTypes"></param>
+        /// <returns></returns>
         private List<ServiceType> SetDefaultServicesIfNull(List<ServiceType>? serviceTypes)
         {
             return serviceTypes ?? new List<ServiceType>

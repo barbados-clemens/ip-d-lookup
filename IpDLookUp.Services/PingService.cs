@@ -10,6 +10,9 @@ using IpDLookUp.Services.Types;
 
 namespace IpDLookUp.Services
 {
+    /// <summary>
+    /// Service for processing Ping Requests
+    /// </summary>
     public class PingService : Service<PingModel>
     {
         public override async Task<IServiceResult<PingModel>> DoLookUp(string address, AddressType type)
