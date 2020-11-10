@@ -39,17 +39,17 @@ namespace IpDLookUp.Tests
             Assert.IsNotEmpty(actual.FailServices);
         }
 
-        [Test]
-        public async Task should_set_item_with_bad_result()
-        {
-            var actual = await WorkerHelper.SendToWorkers("", "", new List<ServiceType>()
-            {
-                ServiceType.GeoIP
-            });
-
-            Assert.IsNotNull(actual.GeoIp.ErrorMessage);
-            Assert.AreEqual(ServiceStatus.Error, actual.GeoIp.Status);
-        }
+        // [Test]
+        // public async Task should_set_item_with_bad_result()
+        // {
+        //     var actual = await WorkerHelper.SendToWorkers("", "", new List<ServiceType>()
+        //     {
+        //         ServiceType.GeoIP
+        //     });
+        //
+        //     Assert.IsNotNull(actual.GeoIp.ErrorMessage);
+        //     Assert.AreEqual(ServiceStatus.Error, actual.GeoIp.Status);
+        // }
 
         /// <summary>
         /// this test requires running the worker project on whatever address is described in the appSettings.Test.json
