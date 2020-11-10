@@ -30,12 +30,10 @@ jobs:
 
       - name: Build Images
         run: |
-          docker build -t $DOCKER_USERNAME/ipd-core:latest -t $DOCKER_USERNAME/ipd-core:$GIT_HASH  -f docker/Core.Dockerfile .
-          docker build -t $DOCKER_USERNAME/ipd-worker:latest -t $DOCKER_USERNAME/ipd-core:$GIT_HASH -f docker/Worker.Dockerfile .
+          docker build -t $DOCKER_USERNAME/ipd-core:latest  -f docker/Core.Dockerfile .
+          docker build -t $DOCKER_USERNAME/ipd-worker:latest -f docker/Worker.Dockerfile .
 
       - name: Push Images
         run: |
           docker push $DOCKER_USERNAME/ipd-core:latest
-          docker push $DOCKER_USERNAME/ipd-core:$GIT_HASH
           docker push $DOCKER_USERNAME/ipd-worker:latest
-          docker push $DOCKER_USERNAME/ipd-worker:$GIT_HASH
