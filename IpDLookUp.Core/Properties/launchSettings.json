@@ -20,10 +20,11 @@
     "IpDLookUp.Core": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "",
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "WORKER_ADDRESS": "https://ipd-workers-pool.calebukle.com/api/worker"
       }
     }
   }

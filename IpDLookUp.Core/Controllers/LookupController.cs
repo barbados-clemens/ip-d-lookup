@@ -28,7 +28,7 @@ namespace IPdLookUp.Core.Controllers
             _logger = logger;
             _config = config;
 
-            if (config["WorkerAddress"] == null)
+            if (config["WORKER_ADDRESS"] == null)
             {
                 _logger.LogError("Missing worker address from configuration");
                 // throw new ArgumentException(
@@ -54,7 +54,7 @@ namespace IPdLookUp.Core.Controllers
                 var services = SetDefaultServicesIfNull(request.Services);
 
                 var res = await WorkerHelper
-                    .SendToWorkers(_config["WorkerAddress"], request.Address, services);
+                    .SendToWorkers(_config["WORKER_ADDRESS"], request.Address, services);
 
                 return new OkObjectResult(res);
             }

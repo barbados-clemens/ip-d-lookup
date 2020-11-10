@@ -29,6 +29,8 @@ namespace IpDLookUp.Services.Types
         public string? ErrorMessage { get; set; }
 
         public string WorkerId { get; set; }
+
+        public long ElapsedMs { get; set; }
     }
 
     public class ServiceResult<TModel> : IServiceResult<TModel>
@@ -47,5 +49,8 @@ namespace IpDLookUp.Services.Types
 
         [JsonPropertyName("workerId")]
         public string WorkerId { get; set; }
+
+        [JsonPropertyName("elapsedMs")]
+        public long ElapsedMs { get; set; }
     }
 }

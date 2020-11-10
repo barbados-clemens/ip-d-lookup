@@ -31,6 +31,8 @@ namespace IpDLookUp.Services
 
         public static async Task<IServiceResult<TModel>> Process<TModel>(string address, ServiceType type)
         {
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
             try
             {
                 address = NormalizeAddress(address, out var addressType);
@@ -48,17 +50,21 @@ namespace IpDLookUp.Services
                     _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
                 };
 
+                sw.Stop();
                 res.WorkerId = Environment.MachineName;
+                res.ElapsedMs = sw.ElapsedMilliseconds;
                 return res;
             }
             catch (Exception e)
             {
+                sw.Stop();
                 return new ServiceResult<TModel>
                 {
                     Status = ServiceStatus.Error,
                     Type = type,
                     ErrorMessage = $"Uncaught Error: {e}",
                     WorkerId = Environment.MachineName,
+                    ElapsedMs = sw.ElapsedMilliseconds
                 };
             }
         }
