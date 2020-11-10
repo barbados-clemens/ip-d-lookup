@@ -1,5 +1,5 @@
-name: 'publish'
-on: [ push ]
+name: "publish"
+on: [push]
 
 jobs:
   api:
@@ -8,7 +8,6 @@ jobs:
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{  secrets.DOCKER_PASSWORD  }}
-      DOCKER_PUSH_REGISTRY: ${{  secrets.DOCKER_PUSH_REGISTRY  }}
       GIT_HASH: $(git rev-parse --short "$GITHUB_SHA")
       GIT_BRANCH: ${GITHUB_REF##*/}
     steps:
@@ -17,7 +16,7 @@ jobs:
       - name: Setup Dotnet
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '3.1.x'
+          dotnet-version: "3.1.x"
 
       - name: Run Tests
         run: dotnet test
@@ -26,17 +25,17 @@ jobs:
         run: dotnet build
 
       - name: Login into Docker
-        #  echo $DOCKER_PASSWORD | docker login $DOCKER_PUSH_REGISTRY -u "DOCKER_USERNAME" --password-stdin
         run: |
-          echo "TODO log into docker"
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 
       - name: Build Images
         run: |
-          docker build -t ipd-core:latest  -f docker/Core.Dockerfile .
-          docker build -t ipd-worker:latest -f docker/Worker.Dockerfile .
+          docker build -t $DOCKER_USERNAME/ipd-core:latest -t $DOCKER_USERNAME/ipd-core:$GIT_HASH  -f docker/Core.Dockerfile .
+          docker build -t $DOCKER_USERNAME/ipd-worker:latest -t $DOCKER_USERNAME/ipd-core:$GIT_HASH -f docker/Worker.Dockerfile .
 
       - name: Push Images
-        #        docker push $DOCKER_PUSH_REGISTRY/ipd-core:latest
-        #        docker push $DOCKER_PUSH_REGISTRY/ipd-worker:latest
         run: |
-          echo "TODO push docker images"
+          docker push $DOCKER_USERNAME/ipd-core:latest
+          docker push $DOCKER_USERNAME/ipd-core:$GIT_HASH
+          docker push $DOCKER_USERNAME/ipd-worker:latest
+          docker push $DOCKER_USERNAME/ipd-worker:$GIT_HASH
