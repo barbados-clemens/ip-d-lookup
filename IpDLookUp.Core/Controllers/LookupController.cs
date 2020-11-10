@@ -47,7 +47,6 @@ namespace IPdLookUp.Core.Controllers
             {
                 _logger.LogInformation(
                     $"New Request with {request.Services?.Count ?? 0} selected services for {request.Address}");
-                WorkerHelper.logger = _logger;
                 var badReq = CheckModelState(request);
                 if (badReq != null)
                     return badReq;

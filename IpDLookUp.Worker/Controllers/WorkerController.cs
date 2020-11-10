@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace IpDLookUp.Worker.Controllers
 {
     [Route("api/[controller]")]
+    [Produces("application/json")]
     public class WorkerController : ControllerBase
     {
         private ILogger<WorkerController> _logger;

@@ -14,8 +14,6 @@ namespace IPdLookUp.Core.Models
 {
     public static class WorkerHelper
     {
-        public static ILogger logger;
-
         private static HttpClient _client = new HttpClient();
 
         public static AppResult HandleInvalidResult(ServiceType type) => SetItemIntoResult(new ServiceResult<string>
@@ -54,24 +52,22 @@ namespace IPdLookUp.Core.Models
 
         private static async Task<AppResult> Send<TModel>(string url, ServiceType type)
         {
-            try
-            {
+
                 var res = await _client.GetAsync(url);
                 var content = await res.Content.ReadAsStringAsync();
-                logger.LogInformation(content);
 
                 var body = JsonSerializer.Deserialize<ServiceResult<TModel>>(content);
                 return SetItemIntoResult(body);
-            }
-            catch (Exception e)
-            {
-                return SetItemIntoResult(new ServiceResult<TModel>
-                {
-                    Status = ServiceStatus.Error,
-                    Type = type,
-                    ErrorMessage = e.ToString(),
-                });
-            }
+            // }
+            // catch (Exception e)
+            // {
+            //     return SetItemIntoResult(new ServiceResult<TModel>
+            //     {
+            //         Status = ServiceStatus.Error,
+            //         Type = type,
+            //         ErrorMessage = e.ToString(),
+            //     });
+            // }
         }
 
         private static AppResult SetItemIntoResult<TModel>(IServiceResult<TModel> data)
