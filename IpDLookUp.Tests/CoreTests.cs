@@ -56,19 +56,19 @@ namespace IpDLookUp.Tests
         /// Default is localhost:6001
         /// </summary>
         /// <returns></returns>
-        [Test]
-        public async Task should_return_results()
-        {
-            var ctrl = new LookupController(_fakeLog, _fakeConfig);
-            var req = new LookUpRequest
-            {
-                Address = "calebukle.com",
-            };
-
-            var actual = await ctrl.RunTasks(req);
-
-            Assert.IsInstanceOf<OkObjectResult>(actual);
-        }
+        // [Test]
+        // public async Task should_return_results()
+        // {
+        //     var ctrl = new LookupController(_fakeLog, _fakeConfig);
+        //     var req = new LookUpRequest
+        //     {
+        //         Address = "calebukle.com",
+        //     };
+        //
+        //     var actual = await ctrl.RunTasks(req);
+        //
+        //     Assert.IsInstanceOf<OkObjectResult>(actual);
+        // }
 
         // [Test]
         // public void should_throw_without_correct_config()
